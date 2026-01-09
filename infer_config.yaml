@@ -1,0 +1,57 @@
+# Minimal single-run inference config for `inference_for_eval.py`
+
+seed: 42
+device: cuda:0
+
+# One of:
+# - predict_all: encode with all edges, then predict new edges
+# - eval_masked: mask edges (e.g. 20%), predict and report precision@k
+mode: eval_masked
+
+cell:
+  # Option A (recommended): provide the two input files directly.
+  x_path: ./data/cell_line/42MGBA_CENTRAL_NERVOUS_SYSTEM/42MGBA_CENTRAL_NERVOUS_SYSTEM_AAACCTGCAACTGCTA-6-6_x.npy
+  edge_path: ./data/cell_line/42MGBA_CENTRAL_NERVOUS_SYSTEM/42MGBA_CENTRAL_NERVOUS_SYSTEM_AAACCTGCAACTGCTA-6-6_edge.npz
+
+  # Batch mode: infer all pairs under a directory (ignores x_path/edge_path/prefix when set).
+  # dir: ./data/cell_line/42MGBA_CENTRAL_NERVOUS_SYSTEM/
+  recursive: false
+  # Optional: limit how many samples to run in batch mode (null means all).
+  max_samples: null
+
+
+model:
+  # One of: gcn/gat/gatv2/sage/gin/vgae_gcn/vgae_gat/vgae_gatv2/vgae_sage/vgae_gin
+  name: vgae_gin
+  ckpt: ./checkpoint/shusi.pth
+  hid_dim: 512
+  edge_attr: 1
+
+feat:
+  # One of: id/g-anno/s-anno/all (must match utils.get_data). For x/edge-only input, use `id`.
+  type: all
+  feat_map1: data/feat_data/embedding_anno_gene.pkl
+  feat_map2: data/feat_data/embedding_anno_sentence.pkl
+
+# Used by `inference.py` (and also `inference_for_eval.py` when you want gene symbols in outputs).
+gene_map: data/mapping_data/gene_mapping_all.pkl
+
+masked_eval:
+  # Used only when mode=eval_masked
+  test_ratio: 0.2
+  precision_at: [1000, 10000, 20000, 50000]
+  # Match inference.py behavior: candidates = 150000 (or smaller if graph is smaller)
+  topk_candidates: 300000
+
+predict:
+  topk: 1000
+  oversample: 20
+  normalize_scores: true
+
+output:
+  csv: inference_outputs/pred_edges.csv
+  metrics_csv: inference_outputs/metrics.csv
+  # Used by `inference.py` (model evaluation loop). If not set, it falls back to `metrics_csv`.
+  eval_csv: evaluate_all.csv
+  # When running batch mode, write one file per sample to this directory.
+  edges_dir: inference_outputs/edges
