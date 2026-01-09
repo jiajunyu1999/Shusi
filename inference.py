@@ -655,7 +655,7 @@ def run_one_graph(
         normalize_scores=bool(config.normalize_scores),
     )
     write_pred_edges_csv(out_path, preds, gene_ids, reversed_gene_map)
-    return out_path, None, None, None
+    return out_path, None, 
 
 
 def resolve_single_graph_spec(config: InferConfig) -> GraphSpec:
@@ -714,7 +714,7 @@ def run(config: InferConfig) -> None:
             eval_csv_path = (REPO_ROOT / eval_csv_path).resolve()
 
     for spec in specs:
-        out_path, metrics, precisions = run_one_graph(
+        out_path, precisions = run_one_graph(
             config=config,
             spec=spec,
             device=device,
