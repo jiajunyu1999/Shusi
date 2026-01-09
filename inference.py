@@ -524,7 +524,7 @@ def write_pred_edges_csv(
         predicted_edges = [(u, v, float((s - smin) / denom)) for (u, v, s) in predicted_edges]
     with path.open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["gene1", "gene2", "score"])
+        w.writerow(["gene1", "gene2"])
         for u, v, s in predicted_edges:
             if gene_ids is None:
                 g1, g2 = str(u), str(v)
@@ -533,7 +533,7 @@ def write_pred_edges_csv(
             else:
                 g1 = reversed_gene_map.get(gene_ids[u], str(gene_ids[u]))
                 g2 = reversed_gene_map.get(gene_ids[v], str(gene_ids[v]))
-            w.writerow([g1, g2, f"{s:.6f}"])
+            w.writerow([g1, g2])
 
 
 def append_legacy_eval_csv(
@@ -645,7 +645,7 @@ def run_one_graph(
             topk_candidates=int(config.masked_topk_candidates),
         )
         # Per request: eval_masked only prints metrics, no prediction CSV or metrics files.
-        return out_path, None, precisions
+        return out_path, precisions
 
     preds = topk_predicted_edges(
         embeddings=embeddings,
