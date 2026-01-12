@@ -1,8 +1,7 @@
 # Systematic discovery of single-cell protein networks in cancer with Shusi
 
-![Shusi](fig_data/shusi.png)
+![Shusi](fig_data/framework.png)
 
-This repository provides **Shusi**, a graph-based framework for systematic discovery of **single-cell protein networks in cancer**. It includes a ready-to-run inference pipeline driven by a single YAML config (`infer_config.yaml`).
 
 Shusi is a multimodal deep learning framework designed to reconstruct protein-knowledge informed single cell gene networks by integrating single-cell transcriptomics with foundational protein knowledge. By leveraging Large Language Models (LLMs) and Graph Isomorphism Networks (GINs), Shusi enables the discovery of cell-state-specific interactomes and therapeutic vulnerabilities in cancer.
 
